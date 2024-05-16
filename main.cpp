@@ -71,7 +71,8 @@ void play_game()
 		print_interface(board, score, step);
 
 		// 判断游戏是否结束，如果结束则跳出循环
-		if (find_space_count(board) == 0) break;
+		if (is_over(board)) break;
+		
 	}
 
 	// 游戏结束
@@ -92,7 +93,7 @@ int main()
 		print_menu();
 		// 获取用户选择
 		choice = _getche();
-		cout << choice;
+		//cout << choice;
 		// 根据用户选择进行相应操作
 		switch (choice)
 		{

@@ -179,6 +179,7 @@ int find_space_count(int board[4][4]) {
 
 void fill_space(int board[4][4]) {
 	int space_count = find_space_count(board);
+	if (space_count == 0) return;
 	random_device rd;  // 用于生成种子
 	mt19937 gen(rd()); // 采用Mersenne Twister随机数生成器
 	uniform_int_distribution<> dis(1, space_count);
@@ -198,4 +199,21 @@ void fill_space(int board[4][4]) {
 			}
 		}
 	}
+}
+
+bool is_over(int board[4][4]) {
+	int board_copy[4][4];
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			board_copy[i][j] = board[i][j];
+		}
+	}
+	int temp_score = 0;
+	to_left(board_copy, &temp_score);
+	to_right(board_copy, &temp_score);
+	to_up(board_copy, &temp_score);
+	to_down(board_copy, &temp_score);
+	return find_space_count(board_copy) == 0;
 }

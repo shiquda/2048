@@ -7,3 +7,4 @@ int generate_two_or_four();
 int find_space_count(int board[4][4]);
 void fill_space(int board[4][4]);
 void print_number_with_color(int n);
+bool is_over(int board[4][4]);
