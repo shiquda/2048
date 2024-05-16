@@ -107,8 +107,8 @@ int main()
 			exit(0);
 			break;
 		default:
-			//cout << "\n输入错误，请从新输入" << endl;
-			//wait_for_enter();
+			cout << "\n输入错误，请从新输入" << endl;
+			wait_for_enter();
 			break;
 		}
 	}
@@ -192,6 +192,32 @@ void print_exit()
 	cout << "\n欢迎再次来玩 2048 鸭~\n";
 }
 
+void print_number_with_color(int n) {
+	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE); // 获取控制台句柄
+
+	// 设置颜色的渐变
+	if (n == 2) SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN); // 黄色
+	else if (n == 4) SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	else if (n == 8) SetConsoleTextAttribute(handle_out, FOREGROUND_RED);
+	else if (n == 16) SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_INTENSITY);
+	else if (n == 32) SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_BLUE);
+	else if (n == 64) SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	else if (n == 128) SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE);
+	else if (n == 256) SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	else if (n == 512) SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_GREEN);
+	else if (n == 1024) SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	else if (n == 2048) SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_INTENSITY | FOREGROUND_RED);
+	else if (n == 4096) SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_RED);
+	else if (n == 8192) SetConsoleTextAttribute(handle_out, FOREGROUND_INTENSITY | FOREGROUND_BLUE | FOREGROUND_RED);
+	else if (n == 16384) SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN);
+	else if (n == 32768) SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	else if (n == 65536) SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_BLUE | FOREGROUND_INTENSITY); // 深紫色
+	else SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // 超过65536用白色
+
+	cout << n;  // 输出数字n
+	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN); // 重置颜色
+}
+
 void print_interface(int board[4][4], int score, int step)
 {
 	// 清屏
@@ -216,7 +242,9 @@ void print_interface(int board[4][4], int score, int step)
 		{
 			if (board[i][j] != 0)
 			{
-				cout << setw(4) << board[i][j] << "|";
+				cout << setw(4);
+				print_number_with_color(board[i][j]);
+				cout << "|";
 			}
 			else
 			{
