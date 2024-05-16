@@ -70,6 +70,10 @@ int main()
 		case 'b':
 			print_help();
 			break;
+		case 'c':
+			print_exit();
+			exit(0);
+			break;
 		default:
 			cout << "\n输入错误，请从新输入" << endl;
 			wait_for_enter();
@@ -152,6 +156,7 @@ void print_exit()
 		Sleep(200);
 		cout << ".";
 	}
+	cout << "\n欢迎再次来玩 2048 鸭~\n";
 }
 
 void print_interface(int board[4][4], int score, int step)
