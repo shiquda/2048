@@ -4,6 +4,8 @@
 #include <conio.h>
 #include <Windows.h>
 #include <iomanip>
+
+#include "board.h"
 using namespace std;
 
 // 请尽量不要使用全局变量
@@ -18,13 +20,14 @@ void play_game();
 void play_game()
 {
 	// 变量声明
-	int board[4][4] = {}; // 4*4的棋盘
+	int board[4][4] = {0}; // 4*4的棋盘
 	int score = 0;		  // 分数
 	int step = 0;		  // 步数
 	char choice = '\0';	  // 用户选择
 
 	// 游戏初始化，包括生成随机数等操作
-
+	fill_space(board);
+	fill_space(board);
 	// 打印游戏界面
 	print_interface(board, score, step);
 
@@ -34,17 +37,46 @@ void play_game()
 		choice = _getch();
 
 		// 根据用户输入进行相应操作
+		//cout << choice << '\n';
+		switch (choice)
+		{
+		case 'P':
+			to_down(board, &score);
 
+			fill_space(board);
+			step++;
+			break;
+		case 'K':
+			to_left(board, &score);
+
+			fill_space(board);
+			step++;
+			break;
+		case 'H':
+			to_up(board, &score);
+			fill_space(board);
+			step++;
+			break;
+		case 'M':
+			to_right(board, &score);
+			fill_space(board);
+			step++;
+			break;
+		default:
+			break;
+		}
 		// 更新相关数据
 
 		// 打印游戏界面
 		print_interface(board, score, step);
 
 		// 判断游戏是否结束，如果结束则跳出循环
-
+		if (find_space_count(board) == 0) break;
 	}
 
 	// 游戏结束
+	cout << "You lose!!!\n";
+	wait_for_enter();
 	print_exit();
 }
 
@@ -60,7 +92,7 @@ int main()
 		print_menu();
 		// 获取用户选择
 		choice = _getche();
-
+		cout << choice;
 		// 根据用户选择进行相应操作
 		switch (choice)
 		{
@@ -75,8 +107,9 @@ int main()
 			exit(0);
 			break;
 		default:
-			cout << "\n输入错误，请从新输入" << endl;
-			wait_for_enter();
+			//cout << "\n输入错误，请从新输入" << endl;
+			//wait_for_enter();
+			break;
 		}
 	}
 	return 0;
