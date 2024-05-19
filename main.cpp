@@ -14,10 +14,10 @@ void wait_for_enter();
 void print_menu();
 void print_help();
 void print_exit();
-void print_interface(int board[4][4], int score, int step);
-void play_game();
+void print_interface(int board[4][4], int score, int step, int mode = CLASSIC);
+void play_game(int mode= CLASSIC);
 
-void play_game()
+void play_game(int mode)
 {
 	// 变量声明
 	int board[4][4] = {0}; // 4*4的棋盘
@@ -29,7 +29,8 @@ void play_game()
 	fill_space(board);
 	fill_space(board);
 	// 打印游戏界面
-	print_interface(board, score, step);
+	print_interface(board, score, step, mode);
+	//cout << "mode:" << mode;
 
 	while (1)
 	{
@@ -62,21 +63,44 @@ void play_game()
 			fill_space(board);
 			step++;
 			break;
+		case 27: // esc
+			print_exit();
+			return;
 		default:
+			//cout << choice;
 			break;
 		}
 		// 更新相关数据
 
 		// 打印游戏界面
-		print_interface(board, score, step);
+		print_interface(board, score, step, mode);
+		//cout << "mode:" << mode;
 
 		// 判断游戏是否结束，如果结束则跳出循环
-		if (is_over(board)) break;
-		
+		if (is_over(board, score, step, mode) == 1) {
+			break;
+		}
+		else if (is_over(board, score, step, mode) == 2) // win
+		{
+			cout << "You beat the game!!!\n";
+			cout << "是否进入无尽模式？输入y继续，按任意其他键结束:\n";
+			char key = _getch();
+			if (key == 'y' || key == 'Y')
+			{
+				mode = INFINITE;
+				print_interface(board, score, step, mode);
+			}
+			else
+			{
+				print_exit();
+				return;
+			}
+		}
 	}
 
 	// 游戏结束
 	cout << "You lose!!!\n";
+
 	wait_for_enter();
 	print_exit();
 }
@@ -98,7 +122,7 @@ int main()
 		switch (choice)
 		{
 		case 'a':
-			play_game();
+			play_game(1);
 			break;
 		case 'b':
 			print_help();
@@ -106,6 +130,9 @@ int main()
 		case 'c':
 			print_exit();
 			exit(0);
+			break;
+		case 'd':
+			play_game(2);
 			break;
 		default:
 			cout << "\n输入错误，请从新输入" << endl;
@@ -142,6 +169,7 @@ void print_menu()
 	cout << "                a.经典模式\n";
 	cout << "                b.游戏规则\n";
 	cout << "                c.退出游戏\n";
+	cout << "                d.挑战模式\n";
 	// 设置控制台文字颜色
 	SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_GREEN);
 	// 打印菜单
@@ -219,7 +247,7 @@ void print_number_with_color(int n) {
 	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN); // 重置颜色
 }
 
-void print_interface(int board[4][4], int score, int step)
+void print_interface(int board[4][4], int score, int step, int mode)
 {
 	// 清屏
 	system("CLS");
@@ -229,7 +257,16 @@ void print_interface(int board[4][4], int score, int step)
 	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN);
 	// 打印游戏界面
 	cout << "            --------------------------------------------\n";
-	cout << "            分数：" << setw(6) << score << "              步数：" << setw(6) << step << endl;
+	cout << "            分数：" << setw(6) << score;
+	if (mode == CHALLENGE)
+	{
+		cout << "    至少分数：" << setw(6) << get_min_score(board, step);
+	}
+	else
+	{
+		cout << "        ";
+	}
+	cout << "    步数：" << setw(6) << step << endl;
 	cout << "            --------------------------------------------\n";
 	cout << "            ********************************************\n";
 	// 设置控制台文字颜色

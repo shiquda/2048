@@ -1,4 +1,5 @@
 #include <random>
+#include "board.h"
 
 using namespace std;
 
@@ -201,7 +202,40 @@ void fill_space(int board[4][4]) {
 	}
 }
 
-bool is_over(int board[4][4]) {
+int get_max_number(int board[4][4]) {
+	int max = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (board[i][j] > max)
+			{
+				max = board[i][j];
+			}
+		}
+	}
+	return max;
+}
+
+int get_min_score(int board[4][4], int step) {
+	int max_num = get_max_number(board);
+	int y = int(log2(step + 1) * sqrt(max_num * step) / 1.25) - 32; // ÄÑ¶ÈÇúÏß
+	return y >= 0 ? y : 0;
+}
+
+int is_over(int board[4][4], int score, int step, int mode) {
+	if (get_max_number(board) == 2048 && mode != INFINITE)
+	{
+		return 2; // Win
+	}
+	if (mode == CHALLENGE)
+	{
+		if (score < get_min_score(board, step))
+		{
+			return 1; // lose
+		}
+	}
+
 	int board_copy[4][4];
 	for (int i = 0; i < 4; i++)
 	{
@@ -217,3 +251,4 @@ bool is_over(int board[4][4]) {
 	to_down(board_copy, &temp_score);
 	return find_space_count(board_copy) == 0;
 }
+
