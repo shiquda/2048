@@ -159,8 +159,15 @@ void to_down(int board[4][4], int* score) {
 inline int generate_two_or_four() {
 	random_device rd;  // 用于生成种子
 	mt19937 gen(rd()); // 采用Mersenne Twister随机数生成器
-	uniform_int_distribution<> dis(0, 1);
-	return (dis(gen) == 0) ? 2 : 4;
+	uniform_int_distribution<> dis(0, 3);
+	return (dis(gen) == 0) ? 4 : 2; // 0.25概率生成4
+}
+
+int generate_random_int(int a, int b) {
+	random_device rd;  // 用于生成种子
+	mt19937 gen(rd()); // 采用Mersenne Twister随机数生成器
+	uniform_int_distribution<> dis(a, b);
+	return dis(gen);
 }
 
 int find_space_count(int board[4][4]) {
@@ -178,13 +185,10 @@ int find_space_count(int board[4][4]) {
 	return count;
 }
 
-void fill_space(int board[4][4]) {
+void fill_space(int board[4][4], int mult) {
 	int space_count = find_space_count(board);
 	if (space_count == 0) return;
-	random_device rd;  // 用于生成种子
-	mt19937 gen(rd()); // 采用Mersenne Twister随机数生成器
-	uniform_int_distribution<> dis(1, space_count);
-	int random_idx = dis(gen);
+	int random_idx = generate_random_int(1, space_count);
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -194,7 +198,7 @@ void fill_space(int board[4][4]) {
 				random_idx--;
 				if (random_idx == 0)
 				{
-					board[i][j] = generate_two_or_four();
+					board[i][j] = generate_two_or_four() * mult;
 					return;
 				}
 			}
@@ -223,8 +227,8 @@ int get_min_score(int board[4][4], int step) {
 	return y >= 0 ? y : 0;
 }
 
-int is_over(int board[4][4], int score, int step, int mode) {
-	if (get_max_number(board) == 2048 && mode != INFINITE)
+int is_over(int board[4][4], int score, int step, int mode, int win_score, int *save_me) {
+	if (get_max_number(board) >= win_score && mode != INFINITE)
 	{
 		return 2; // Win
 	}
@@ -249,6 +253,98 @@ int is_over(int board[4][4], int score, int step, int mode) {
 	to_right(board_copy, &temp_score);
 	to_up(board_copy, &temp_score);
 	to_down(board_copy, &temp_score);
-	return find_space_count(board_copy) == 0;
+	if (find_space_count(board_copy) == 0) // 满了
+	{
+		if (save_me != nullptr && *save_me > 0)
+		{
+			(*save_me)--;
+			bump(board);
+			return 0;
+		}
+		return 1; // lose
+	}
+	return 0;
+}
+
+string bonus_explain(int type) {
+	switch (type)
+	{
+	case ELEVATE:
+		return "将场上的点数翻倍。";
+	case BUMB:
+		return "随机炸掉 4 个最小的数字。";
+	case SAVE:
+		return "当你濒死的时候，拯救你。";
+	case ENHANCE_GENERATE:
+		return "将随机生成的数字翻倍。";
+	case MAGIC:
+		return "清零分数。将场上的所有数字变为最大数字。";
+	case EASY_WIN:
+		return "胜利所需的最大数字减半。";
+	default:
+		break;
+	}
+	return "";
+}
+
+void elevate(int board[4][4]) {
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			board[i][j] *= 2;
+		}
+	}
+}
+
+void bump(int board[4][4]) { // 清除最小的数字
+	int min_num = 65536;
+	int count = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (min_num > board[i][j] && board[i][j] != 0)
+			{
+				min_num = board[i][j];
+				count++;
+			}
+			else
+			{
+				count = 1;
+			}
+		}
+	}
+	// 随机去除最小的数
+	int random_idx = generate_random_int(1, count);
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (board[i][j] == min_num)
+			{
+				random_idx--;
+				if (random_idx == 0)
+				{
+					board[i][j] = 0;
+					return;
+				}
+			}
+		}
+	}
+}
+
+void magic(int board[4][4]) {
+	int max_num = get_max_number(board);
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (board[i][j] != 0)
+			{
+				board[i][j] = max_num;
+			}
+		}
+	}
 }
 

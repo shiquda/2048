@@ -15,7 +15,8 @@ void print_menu();
 void print_help();
 void print_exit();
 void print_interface(int board[4][4], int score, int step, int mode = CLASSIC);
-void play_game(int mode= CLASSIC);
+void play_game(int mode = CLASSIC);
+void print_rouge(int generate_mult, int save_me, int win_score);
 
 void play_game(int mode)
 {
@@ -25,12 +26,22 @@ void play_game(int mode)
 	int step = 0;		  // 步数
 	char choice = '\0';	  // 用户选择
 
+	// ROUGE
+	bool is_rouge = (mode == ROUGE);
+	int bonus_count = 6; // 6种不同的奖励
+	int choice_count = 2; // 待选个数
+	int generate_mult = 1;
+	int max_num = 4;
+	int win_score = DEFAULT_WIN_SCORE;
+	int save_me = 0; // 救命次数
+
+
 	// 游戏初始化，包括生成随机数等操作
-	fill_space(board);
-	fill_space(board);
+	fill_space(board, generate_mult);
+	fill_space(board, generate_mult);
 	// 打印游戏界面
 	print_interface(board, score, step, mode);
-	//cout << "mode:" << mode;
+	if (is_rouge) print_rouge(generate_mult, save_me, win_score);
 
 	while (1)
 	{
@@ -38,29 +49,27 @@ void play_game(int mode)
 		choice = _getch();
 
 		// 根据用户输入进行相应操作
-		//cout << choice << '\n';
 		switch (choice)
 		{
 		case 'P':
 			to_down(board, &score);
 
-			fill_space(board);
+			fill_space(board, generate_mult);
 			step++;
 			break;
 		case 'K':
 			to_left(board, &score);
-
-			fill_space(board);
+			fill_space(board, generate_mult);
 			step++;
 			break;
 		case 'H':
 			to_up(board, &score);
-			fill_space(board);
+			fill_space(board, generate_mult);
 			step++;
 			break;
 		case 'M':
 			to_right(board, &score);
-			fill_space(board);
+			fill_space(board, generate_mult);
 			step++;
 			break;
 		case 27: // esc
@@ -73,14 +82,73 @@ void play_game(int mode)
 		// 更新相关数据
 
 		// 打印游戏界面
-		print_interface(board, score, step, mode);
-		//cout << "mode:" << mode;
 
+		print_interface(board, score, step, mode);
+		if (is_rouge) print_rouge(generate_mult, save_me, win_score);
+
+		if (is_rouge)
+		{
+			if (get_max_number(board) > max_num) // 触发肉鸽奖励
+			{
+				max_num = get_max_number(board);
+				char bonus_input;
+				cout << "是时候选择你应得的了……\n";
+				int choices[10]{0};
+				for (int i = 0; i < choice_count; i++)
+				{
+					choices[i] = generate_random_int(1, bonus_count);
+					cout << i + 1 << ' ' << bonus_explain(choices[i]) << '\n';
+				}
+				cout << "好好选，否则就没机会反悔了……\n";
+				bonus_input = _getch();
+				int chosen_bonus;
+				if (bonus_input < '1' or bonus_input > choice_count + '0')
+				{
+					chosen_bonus = -1; // 放到default
+				}
+				else
+				{
+					chosen_bonus = choices[bonus_input - 1 - '0'];
+				}
+				switch (chosen_bonus)
+				{
+				case ELEVATE:
+					elevate(board);
+					break;
+				case BUMB:
+					for (int i = 0; i < 4; i++)
+					{
+						bump(board);
+					}
+					break;
+				case SAVE:
+					save_me++;
+					break;
+				case ENHANCE_GENERATE:
+					generate_mult *= 2;
+					break;
+				case MAGIC:
+					score = 0;
+					magic(board);
+					break;
+				case EASY_WIN:
+					win_score /= 2;
+					break;
+				default:
+					cout << "你选择了我未曾设想的选项……奖励到此为止了……下次注意点……\n";
+					break;
+				}
+			}
+			//
+			print_interface(board, score, step, mode);
+			print_rouge(generate_mult, save_me, win_score);
+		}
+		
 		// 判断游戏是否结束，如果结束则跳出循环
-		if (is_over(board, score, step, mode) == 1) {
+		if (is_over(board, score, step, mode, win_score, &save_me) == 1) {
 			break;
 		}
-		else if (is_over(board, score, step, mode) == 2) // win
+		else if (is_over(board, score, step, mode, win_score, &save_me) == 2) // win
 		{
 			cout << "You beat the game!!!\n";
 			cout << "是否进入无尽模式？输入y继续，按任意其他键结束:\n";
@@ -122,20 +190,22 @@ int main()
 		switch (choice)
 		{
 		case 'a':
-			play_game(1);
+			play_game(CLASSIC);
 			break;
 		case 'b':
-			print_help();
+			play_game(CHALLENGE);
 			break;
 		case 'c':
-			print_exit();
-			exit(0);
+			play_game(ROUGE);
 			break;
 		case 'd':
-			play_game(2);
+			print_help();
+			break;
+		case 'e':
+			print_exit();
 			break;
 		default:
-			cout << "\n输入错误，请从新输入" << endl;
+			cout << "\n输入错误，请再次输入" << endl;
 			wait_for_enter();
 			break;
 		}
@@ -167,9 +237,11 @@ void print_menu()
 	// 打印标题
 	cout << "                   2048\n";
 	cout << "                a.经典模式\n";
-	cout << "                b.游戏规则\n";
-	cout << "                c.退出游戏\n";
-	cout << "                d.挑战模式\n";
+	cout << "                b.挑战模式\n";
+	cout << "                c.ROUGE模式\n";
+	cout << "                d.游戏规则\n";
+	cout << "                e.退出游戏\n";
+
 	// 设置控制台文字颜色
 	SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_GREEN);
 	// 打印菜单
@@ -178,7 +250,7 @@ void print_menu()
 
 	// 恢复控制台文字颜色为默认颜色
 	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-	cout << "\n请输入你的选择(a-c):";
+	cout << "\n请输入你的选择(a-e):";
 }
 
 void print_help()
@@ -298,6 +370,17 @@ void print_interface(int board[4][4], int score, int step, int mode)
 	cout << "            --------------------------------------------\n";
 	cout << "            ↓：下   ←：左  ↑：上  →：右  ESC键：退出\n\n";
 
+	// 恢复控制台文字颜色为默认颜色
+	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+}
+
+void print_rouge(int generate_mult, int save_me, int win_score) {
+	//获取标准输入设备句柄
+	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
+	// 设置控制台文字颜色
+	SetConsoleTextAttribute(handle_out, FOREGROUND_GREEN);
+	cout << "            --------------------------------------------\n";
+	cout << "            倍率：" << setw(6) << generate_mult << "    免死金牌：" << setw(6) << save_me << "    胜利条件：" << setw(6) << win_score << endl;
 	// 恢复控制台文字颜色为默认颜色
 	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 }
