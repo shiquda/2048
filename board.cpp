@@ -3,8 +3,9 @@
 
 using namespace std;
 
-void to_left(int board[4][4], int* score) {
+bool to_left(int board[4][4], int* score) {
 	// 重力
+	bool flag = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -13,6 +14,7 @@ void to_left(int board[4][4], int* score) {
 			{
 				if (board[i][k] == 0)
 				{
+					flag = 1;
 					board[i][k] = board[i][k + 1];
 					board[i][k + 1] = 0;
 				}
@@ -25,6 +27,7 @@ void to_left(int board[4][4], int* score) {
 		for (int j = 0; j < 3; j++)
 		{
 			if (board[i][j] == board[i][j + 1]) {
+				flag = 1;
 				(*score) += board[i][j] * 2;
 				board[i][j] *= 2;
 				board[i][j + 1] = 0;
@@ -40,20 +43,24 @@ void to_left(int board[4][4], int* score) {
 			{
 				if (board[i][k] == 0)
 				{
+					flag = 1;
 					board[i][k] = board[i][k + 1];
 					board[i][k + 1] = 0;
 				}
 			}
 		}
 	}
+	return flag; // 移动过
 }
 
-void to_right(int board[4][4], int* score) {
+bool to_right(int board[4][4], int* score) {
+	bool flag = 0;
 	// 右移重力
 	for (int i = 0; i < 4; i++) {
 		for (int j = 2; j >= 0; j--) {
 			for (int k = 2; k >= 0; k--) {
 				if (board[i][k + 1] == 0) {
+					flag = 1;
 					board[i][k + 1] = board[i][k];
 					board[i][k] = 0;
 				}
@@ -64,6 +71,7 @@ void to_right(int board[4][4], int* score) {
 	for (int i = 0; i < 4; i++) {
 		for (int j = 2; j >= 0; j--) {
 			if (board[i][j + 1] == board[i][j]) {
+				flag = 1;
 				(*score) += board[i][j + 1] * 2;
 				board[i][j + 1] *= 2;
 				board[i][j] = 0;
@@ -75,21 +83,25 @@ void to_right(int board[4][4], int* score) {
 		for (int j = 2; j >= 0; j--) {
 			for (int k = 2; k >= 0; k--) {
 				if (board[i][k + 1] == 0) {
+					flag = 1;
 					board[i][k + 1] = board[i][k];
 					board[i][k] = 0;
 				}
 			}
 		}
 	}
+	return flag;
 }
 
 
-void to_up(int board[4][4], int* score) {
+bool to_up(int board[4][4], int* score) {
+	bool flag = 0;
 	// 向上重力
 	for (int j = 0; j < 4; j++) {
 		for (int i = 1; i < 4; i++) {
 			for (int k = i; k > 0; k--) {
 				if (board[k - 1][j] == 0) {
+					flag = 1;
 					board[k - 1][j] = board[k][j];
 					board[k][j] = 0;
 				}
@@ -100,6 +112,7 @@ void to_up(int board[4][4], int* score) {
 	for (int j = 0; j < 4; j++) {
 		for (int i = 0; i < 3; i++) {
 			if (board[i][j] == board[i + 1][j]) {
+				flag = 1;
 				(*score) += board[i][j] * 2;
 				board[i][j] *= 2;
 				board[i + 1][j] = 0;
@@ -111,21 +124,25 @@ void to_up(int board[4][4], int* score) {
 		for (int i = 1; i < 4; i++) {
 			for (int k = i; k > 0; k--) {
 				if (board[k - 1][j] == 0) {
+					flag = 1;
 					board[k - 1][j] = board[k][j];
 					board[k][j] = 0;
 				}
 			}
 		}
 	}
+	return flag;
 }
 
 
-void to_down(int board[4][4], int* score) {
+bool to_down(int board[4][4], int* score) {
+	bool flag = 0;
 	// 向下重力
 	for (int j = 0; j < 4; j++) {
 		for (int i = 2; i >= 0; i--) {
 			for (int k = i; k < 3; k++) {
 				if (board[k + 1][j] == 0) {
+					flag = 1;
 					board[k + 1][j] = board[k][j];
 					board[k][j] = 0;
 				}
@@ -136,6 +153,7 @@ void to_down(int board[4][4], int* score) {
 	for (int j = 0; j < 4; j++) {
 		for (int i = 2; i >= 0; i--) {
 			if (board[i + 1][j] == board[i][j]) {
+				flag = 1;
 				(*score) += board[i + 1][j] * 2;
 				board[i + 1][j] *= 2;
 				board[i][j] = 0;
@@ -147,12 +165,14 @@ void to_down(int board[4][4], int* score) {
 		for (int i = 2; i >= 0; i--) {
 			for (int k = i; k < 3; k++) {
 				if (board[k + 1][j] == 0) {
+					flag = 1;
 					board[k + 1][j] = board[k][j];
 					board[k][j] = 0;
 				}
 			}
 		}
 	}
+	return flag;
 }
 
 

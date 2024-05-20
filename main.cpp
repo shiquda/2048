@@ -52,25 +52,30 @@ void play_game(int mode)
 		switch (choice)
 		{
 		case 'P':
-			to_down(board, &score);
-
-			fill_space(board, generate_mult);
-			step++;
+			if (to_down(board, &score))
+			{
+				fill_space(board, generate_mult);
+				step++;
+			}
 			break;
 		case 'K':
-			to_left(board, &score);
-			fill_space(board, generate_mult);
-			step++;
+			if (to_left(board, &score)) {
+				fill_space(board, generate_mult);
+				step++;
+			}
 			break;
 		case 'H':
-			to_up(board, &score);
-			fill_space(board, generate_mult);
-			step++;
+			if (to_up(board, &score)) {
+				fill_space(board, generate_mult);
+				step++;
+			}
 			break;
 		case 'M':
-			to_right(board, &score);
-			fill_space(board, generate_mult);
-			step++;
+			if (to_right(board, &score))
+			{
+				fill_space(board, generate_mult);
+				step++;
+			}
 			break;
 		case 27: // esc
 			print_exit();
