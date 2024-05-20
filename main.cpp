@@ -17,6 +17,8 @@ void print_exit();
 void print_interface(int board[4][4], int score, int step, int mode = CLASSIC);
 void play_game(int mode = CLASSIC);
 void print_rouge(int generate_mult, int save_me, int win_score);
+void print_red(string str);
+void print_green(string str);
 
 void play_game(int mode)
 {
@@ -141,7 +143,7 @@ void play_game(int mode)
 					win_score /= 2;
 					break;
 				default:
-					cout << "            你选择了我未曾设想的选项……奖励已经湮灭……下次注意点……\n";
+					print_red("            你选择了我未曾设想的选项……奖励已经湮灭……下次注意点……\n");
 					wait_for_enter();
 					break;
 				}
@@ -158,8 +160,8 @@ void play_game(int mode)
 		}
 		else if (over == 2) // win
 		{
-			cout << "You beat the game!!!\n";
-			cout << "是否进入无尽模式？输入y继续，按任意其他键结束:\n";
+			print_green("You beat the game!!!\n");
+			print_green("是否进入无尽模式？输入y继续，按任意其他键结束:\n");
 			char key = _getch();
 			if (key == 'y' || key == 'Y')
 			{
@@ -175,7 +177,7 @@ void play_game(int mode)
 	}
 
 	// 游戏结束
-	cout << "You lose!!!\n";
+	print_red("You lose!!!");
 
 	wait_for_enter();
 	print_exit();
@@ -223,10 +225,26 @@ int main()
 
 void wait_for_enter()
 {
-	cout << endl << "按回车键继续";
+	cout << endl << "按回车键继续……";
 	while (_getch() != '\r')
 		;
 	cout << endl << endl;
+}
+
+void print_red(string str) {
+	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(handle_out, FOREGROUND_RED);
+	// 恢复控制台文字颜色为默认颜色
+	cout << str;
+	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+}
+
+void print_green(string str) {
+	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(handle_out, FOREGROUND_GREEN);
+	// 恢复控制台文字颜色为默认颜色
+	cout << str;
+	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 }
 
 void print_menu()
@@ -241,9 +259,20 @@ void print_menu()
 	cout << "--------------------------------------------\n";
 	cout << "********************************************\n";
 	// 设置控制台文字颜色
-	SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	
 	// 打印标题
-	cout << "                   2048\n";
+	SetConsoleTextAttribute(handle_out, FOREGROUND_GREEN);
+	cout << R"(                                                                    
+ .-----.    .----.       .---.     .-----.   
+/ ,-.   \  /  ..  \     / .  |    /  .-.  \  
+'-'  |  | .  /  \  .   / /|  |   |   \_.' /  
+   .'  /  |  |  '  |  / / |  |_   /  .-. '.  
+ .'  /__  '  \  /  ' /  '-'    | |  |   |  | 
+|       |  \  `'  /  `----|  |-'  \  '-'  /  
+`-------'   `---''        `--'     `----''   
+)";
+	//cout << "                   2048\n";
+	SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE);
 	cout << "                a.经典模式\n";
 	cout << "                b.挑战模式\n";
 	cout << "                c.ROUGE模式\n";
