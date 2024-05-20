@@ -213,6 +213,7 @@ int main()
 			break;
 		case 'e':
 			print_exit();
+			exit(0);
 			break;
 		default:
 			cout << "\n输入错误，请再次输入" << endl;
