@@ -136,7 +136,7 @@ void play_game(int mode)
 					win_score /= 2;
 					break;
 				default:
-					cout << "你选择了我未曾设想的选项……奖励已经湮灭……下次注意点……\n";
+					cout << "            你选择了我未曾设想的选项……奖励已经湮灭……下次注意点……\n";
 					wait_for_enter();
 					break;
 				}

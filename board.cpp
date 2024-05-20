@@ -25,7 +25,7 @@ void to_left(int board[4][4], int* score) {
 		for (int j = 0; j < 3; j++)
 		{
 			if (board[i][j] == board[i][j + 1]) {
-				(*score) += board[i][j];
+				(*score) += board[i][j] * 2;
 				board[i][j] *= 2;
 				board[i][j + 1] = 0;
 			}
@@ -64,7 +64,7 @@ void to_right(int board[4][4], int* score) {
 	for (int i = 0; i < 4; i++) {
 		for (int j = 2; j >= 0; j--) {
 			if (board[i][j + 1] == board[i][j]) {
-				(*score) += board[i][j + 1];
+				(*score) += board[i][j + 1] * 2;
 				board[i][j + 1] *= 2;
 				board[i][j] = 0;
 			}
@@ -100,7 +100,7 @@ void to_up(int board[4][4], int* score) {
 	for (int j = 0; j < 4; j++) {
 		for (int i = 0; i < 3; i++) {
 			if (board[i][j] == board[i + 1][j]) {
-				(*score) += board[i][j];
+				(*score) += board[i][j] * 2;
 				board[i][j] *= 2;
 				board[i + 1][j] = 0;
 			}
@@ -136,7 +136,7 @@ void to_down(int board[4][4], int* score) {
 	for (int j = 0; j < 4; j++) {
 		for (int i = 2; i >= 0; i--) {
 			if (board[i + 1][j] == board[i][j]) {
-				(*score) += board[i + 1][j];
+				(*score) += board[i + 1][j] * 2;
 				board[i + 1][j] *= 2;
 				board[i][j] = 0;
 			}
@@ -223,7 +223,7 @@ int get_max_number(int board[4][4]) {
 
 int get_min_score(int board[4][4], int step) {
 	int max_num = get_max_number(board);
-	int y = int(log2(step + 1) * sqrt(max_num * step) / 1.25) - 32; // 难度曲线
+	int y = int(log2(step + 1) * sqrt(max_num * step) / 1.25) * 2 - 64; // 难度曲线
 	return y >= 0 ? y : 0;
 }
 
@@ -276,7 +276,7 @@ string bonus_explain(int type) {
 	case SAVE:
 		return "“免死”：当你濒死的时候，随机炸掉一个最小数字，拯救你。你还活着……暂时的。";
 	case ENHANCE_GENERATE:
-		return "“下注”：将随机生成的数字翻倍。这笔投资看起来是件好事……";
+		return "“下注”：将随机生成的数字翻倍。看起来是件好事……";
 	case MAGIC:
 		return "“豪赌”：清零分数。将场上的所有数字变为最大数字。这是否值得呢……";
 	case EASY_WIN:
