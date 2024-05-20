@@ -12,6 +12,8 @@
 #define MAGIC 5
 #define EASY_WIN 6
 
+#define endl '\n'
+
 void to_left(int board[4][4], int* score);
 void to_right(int board[4][4], int* score);
 void to_up(int board[4][4], int* score);

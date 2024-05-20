@@ -92,14 +92,14 @@ void play_game(int mode)
 			{
 				max_num = get_max_number(board);
 				char bonus_input;
-				cout << "是时候选择你应得的了……\n";
+				cout << "            是时候选择你应得的了……\n";
 				int choices[10]{0};
 				for (int i = 0; i < choice_count; i++)
 				{
 					choices[i] = generate_random_int(1, bonus_count);
-					cout << i + 1 << ' ' << bonus_explain(choices[i]) << '\n';
+					cout << "            " << i + 1 << ' ' << bonus_explain(choices[i]) << '\n';
 				}
-				cout << "好好选，否则就没机会反悔了……\n";
+				cout << "            好好选，否则就没机会反悔了……\n";
 				bonus_input = _getch();
 				int chosen_bonus;
 				if (bonus_input < '1' or bonus_input > choice_count + '0')
@@ -114,6 +114,7 @@ void play_game(int mode)
 				{
 				case ELEVATE:
 					elevate(board);
+					max_num *= 2;
 					break;
 				case BUMB:
 					for (int i = 0; i < 4; i++)
@@ -135,7 +136,8 @@ void play_game(int mode)
 					win_score /= 2;
 					break;
 				default:
-					cout << "你选择了我未曾设想的选项……奖励到此为止了……下次注意点……\n";
+					cout << "你选择了我未曾设想的选项……奖励已经湮灭……下次注意点……\n";
+					wait_for_enter();
 					break;
 				}
 			}
@@ -145,10 +147,11 @@ void play_game(int mode)
 		}
 		
 		// 判断游戏是否结束，如果结束则跳出循环
-		if (is_over(board, score, step, mode, win_score, &save_me) == 1) {
+		int over = is_over(board, score, step, mode, win_score, &save_me);
+		if (over == 1) {
 			break;
 		}
-		else if (is_over(board, score, step, mode, win_score, &save_me) == 2) // win
+		else if (over == 2) // win
 		{
 			cout << "You beat the game!!!\n";
 			cout << "是否进入无尽模式？输入y继续，按任意其他键结束:\n";

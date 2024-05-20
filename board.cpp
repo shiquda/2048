@@ -270,17 +270,17 @@ string bonus_explain(int type) {
 	switch (type)
 	{
 	case ELEVATE:
-		return "将场上的点数翻倍。";
+		return "“富有”：将场上的点数翻倍。你变得富有了……吗?";
 	case BUMB:
-		return "随机炸掉 4 个最小的数字。";
+		return "“湮灭”：随机炸掉 4 个最小的数字。毁灭吧……";
 	case SAVE:
-		return "当你濒死的时候，拯救你。";
+		return "“免死”：当你濒死的时候，随机炸掉一个最小数字，拯救你。你还活着……暂时的。";
 	case ENHANCE_GENERATE:
-		return "将随机生成的数字翻倍。";
+		return "“下注”：将随机生成的数字翻倍。这笔投资看起来是件好事……";
 	case MAGIC:
-		return "清零分数。将场上的所有数字变为最大数字。";
+		return "“豪赌”：清零分数。将场上的所有数字变为最大数字。这是否值得呢……";
 	case EASY_WIN:
-		return "胜利所需的最大数字减半。";
+		return "“祈求”：胜利所需的最大数字减半。你可能能更容易获胜……但也仅此而已。";
 	default:
 		break;
 	}
