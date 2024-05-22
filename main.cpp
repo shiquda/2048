@@ -357,10 +357,33 @@ void print_number_with_color(int n) {
 	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN); // 重置颜色
 }
 
+void clearScreen() {
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	DWORD count;
+	DWORD cellCount;
+	COORD homeCoords = { 0, 0 };
+
+	if (hConsole == INVALID_HANDLE_VALUE) return;
+
+	// 获取控制台屏幕缓冲区信息
+	if (!GetConsoleScreenBufferInfo(hConsole, &csbi)) return;
+	cellCount = csbi.dwSize.X * csbi.dwSize.Y;
+
+	// 用空格填充整个缓冲区
+	if (!FillConsoleOutputCharacter(hConsole, (TCHAR)' ', cellCount, homeCoords, &count)) return;
+
+	// 设置控制台缓冲区属性
+	if (!FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count)) return;
+
+	// 设置光标位置
+	SetConsoleCursorPosition(hConsole, homeCoords);
+}
+
 void print_interface(int board[4][4], int score, int step, int mode)
 {
 	// 清屏
-	system("CLS");
+	clearScreen();
 	//获取标准输入设备句柄
 	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
 	// 设置控制台文字颜色
