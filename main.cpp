@@ -19,6 +19,7 @@ void play_game(int mode = CLASSIC);
 void print_rouge(int generate_mult, int save_me, int win_score);
 void print_red(string str);
 void print_green(string str);
+void clearScreen();
 
 void play_game(int mode)
 {
@@ -376,7 +377,7 @@ void print_number_with_color(int n) {
 	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN); // ÷ÿ÷√—’…´
 }
 
-inline void clearScreen() {
+void clearScreen() {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	DWORD count;
