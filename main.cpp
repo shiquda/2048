@@ -19,6 +19,7 @@ void play_game(int mode = CLASSIC);
 void print_rouge(int generate_mult, int save_me, int win_score);
 void print_red(string str);
 void print_green(string str);
+inline void clearScreen();
 
 void play_game(int mode)
 {
@@ -306,11 +307,30 @@ void print_help()
 	// 打印游戏规则
 	cout << "操作说明：\n\n";
 	cout << "↓：下   ←：左  ↑：上  →：右  ESC键：退出\n\n";
-	cout << "游戏介绍：\n\n";
+	cout << "经典模式：\n\n";
 	cout << "每次选择一个方向移动，移动时数字向该方向靠拢\n";
 	cout << "相同数字可合并，移动后空格处会生成随机数字2/4\n";
 	cout << "如果得到数字2048，则游戏胜利!\n";
 	cout << "如果棋盘被数字填满，无法进行移动，则游戏失败!\n\n";
+	cout << "--------------------------------------------\n";
+	cout << "挑战模式：\n\n";
+	cout << "在经典模式的基础上，给那些不满足于基础难度的玩家准备，增加了最低分数这一限制条件。\n";
+	cout << "最低分数与游戏当前的状态相关：步数和最大数字越高，所需的最低分数越高。\n";
+	cout << "当分数低于最低分数的时候，游戏结束。\n";
+	cout << "--------------------------------------------\n";
+	cout << "ROUGE模式：\n\n";
+	cout << "在经典模式的基础上，为游戏添加了更多的决策挑战。\n";
+	cout << "在该模式中，玩家的目的是：在通关的基础上，挑战达到更高的分数。\n";
+	cout << "每次游戏中的最大数字提升时，玩家可以从以下6种增益中的两个选择其一：\n";
+	cout << "	“富有”：将场上的点数翻倍。你变得富有了……吗?\n";
+	cout << "	“湮灭”：随机炸掉 4 个最小的数字。毁灭吧……\n";
+	cout << "	“免死”：当你濒死的时候，随机炸掉一个最小数字，拯救你。你还活着……暂时的\n";
+	cout << "	“下注”：将随机生成的数字翻倍。看起来是件好事……\n";
+	cout << "	“豪赌”：清零分数。将场上的所有数字变为最大数字。这是否值得呢……\n";
+	cout << "	“祈求”：胜利所需的最大数字减半。你可能能更容易获胜……但也仅此而已。\n";
+	print_red("“增益”可能会有负面选项，请谨慎选择，此选项会在本局中永久生效。\n");
+
+	
 	// 设置控制台文字颜色
 	SetConsoleTextAttribute(handle_out, FOREGROUND_BLUE | FOREGROUND_GREEN);
 	cout << "********************************************\n";
@@ -357,7 +377,7 @@ void print_number_with_color(int n) {
 	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN); // 重置颜色
 }
 
-void clearScreen() {
+inline void clearScreen() {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	DWORD count;

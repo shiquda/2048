@@ -183,7 +183,7 @@ inline int generate_two_or_four() {
 	return (dis(gen) == 0) ? 4 : 2; // 0.25概率生成4
 }
 
-int generate_random_int(int a, int b) {
+inline int generate_random_int(int a, int b) {
 	random_device rd;  // 用于生成种子
 	mt19937 gen(rd()); // 采用Mersenne Twister随机数生成器
 	uniform_int_distribution<> dis(a, b);
