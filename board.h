@@ -1,6 +1,6 @@
 #define CLASSIC 1
 #define CHALLENGE 2
-#define INFINITE 3
+#define INFI 3
 #define ROUGE 4
 #define DEFAULT_WIN_SCORE 2048
 

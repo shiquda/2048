@@ -248,7 +248,7 @@ int get_min_score(int board[4][4], int step) {
 }
 
 int is_over(int board[4][4], int score, int step, int mode, int win_score, int *save_me) {
-	if (get_max_number(board) >= win_score && mode != INFINITE)
+	if (get_max_number(board) >= win_score && mode != INFI)
 	{
 		return 2; // Win
 	}

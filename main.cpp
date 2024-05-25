@@ -19,7 +19,6 @@ void play_game(int mode = CLASSIC);
 void print_rouge(int generate_mult, int save_me, int win_score);
 void print_red(string str);
 void print_green(string str);
-inline void clearScreen();
 
 void play_game(int mode)
 {
@@ -166,7 +165,7 @@ void play_game(int mode)
 			char key = _getch();
 			if (key == 'y' || key == 'Y')
 			{
-				mode = INFINITE;
+				mode = INFI;
 				print_interface(board, score, step, mode);
 			}
 			else
@@ -464,4 +463,4 @@ void print_rouge(int generate_mult, int save_me, int win_score) {
 	cout << "            倍率：" << setw(6) << generate_mult << "    免死金牌：" << setw(6) << save_me << "    胜利条件：" << setw(6) << win_score << endl;
 	// 恢复控制台文字颜色为默认颜色
 	SetConsoleTextAttribute(handle_out, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-}
+}   
